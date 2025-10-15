@@ -25,8 +25,8 @@ class PropertyController(
     @GetMapping("/{id}")
     @Operation(summary = "Get property by ID", description = "Retrieve a specific property by its ID")
     fun getPropertyById(@PathVariable id: Long): ResponseEntity<Property> {
-        val property = propertyRepository.findById(id)
-            .orElseThrow { NoSuchElementException("Property not found with id: $id") }
+        val property = propertyRepository.findById(id).orElse(null)
+            ?: throw NoSuchElementException("Property not found with id: $id")
         return ResponseEntity.ok(property)
     }
 
@@ -43,9 +43,9 @@ class PropertyController(
         @PathVariable id: Long,
         @RequestBody updatedProperty: Property
     ): ResponseEntity<Property> {
-        val property = propertyRepository.findById(id)
-            .orElseThrow { NoSuchElementException("Property not found with id: $id") }
-
+        if (!propertyRepository.existsById(id)) {
+            throw NoSuchElementException("Property not found with id: $id")
+        }
         updatedProperty.propertyId = id
         val saved = propertyRepository.save(updatedProperty)
         return ResponseEntity.ok(saved)
@@ -54,6 +54,9 @@ class PropertyController(
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete property", description = "Delete a property by ID")
     fun deleteProperty(@PathVariable id: Long): ResponseEntity<Void> {
+        if (!propertyRepository.existsById(id)) {
+            throw NoSuchElementException("Property not found with id: $id")
+        }
         propertyRepository.deleteById(id)
         return ResponseEntity.noContent().build()
     }

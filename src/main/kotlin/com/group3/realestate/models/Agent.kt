@@ -3,6 +3,7 @@ package com.group3.realestate.models
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
+import jakarta.persistence.EntityListeners
 import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
@@ -11,11 +12,13 @@ import jakarta.persistence.ManyToMany
 import jakarta.persistence.Table
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.time.Instant
 import java.time.LocalDate
 
 @Entity
 @Table(name = "agents")
+@EntityListeners(AuditingEntityListener::class)
 data class Agent(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     var agentId: Long? = null,
