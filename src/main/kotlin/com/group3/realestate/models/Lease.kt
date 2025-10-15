@@ -5,6 +5,7 @@ import com.group3.realestate.models.enums.LeaseStatus
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
+import jakarta.persistence.EntityListeners
 import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
 import jakarta.persistence.FetchType
@@ -17,12 +18,14 @@ import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.math.BigDecimal
 import java.time.Instant
 import java.time.LocalDate
 
 @Entity
 @Table(name = "leases")
+@EntityListeners(AuditingEntityListener::class)
 data class Lease(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     var leaseId: Long? = null,

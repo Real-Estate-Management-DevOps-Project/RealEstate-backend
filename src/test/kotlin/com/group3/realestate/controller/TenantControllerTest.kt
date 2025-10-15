@@ -76,9 +76,11 @@ class TenantControllerTest {
 
     @Test
     @WithMockUser
-    fun `should return 500 when tenant not found`() {
+    fun `should return 404 when tenant not found`() {
         mockMvc.perform(get("/api/tenants/99999"))
-            .andExpect(status().is5xxServerError)
+            .andExpect(status().isNotFound)
+            .andExpect(jsonPath("$.status").value(404))
+            .andExpect(jsonPath("$.error").value("Not Found"))
     }
 
     @Test
@@ -88,7 +90,8 @@ class TenantControllerTest {
             "firstName" to "Jane",
             "lastName" to "Smith",
             "email" to "jane.smith@example.com",
-            "phoneNumber" to "555-5678"
+            "phoneNumber" to "555-5678",
+            "leases" to emptyList<Map<String, Any>>()
         )
 
         mockMvc.perform(
@@ -109,7 +112,8 @@ class TenantControllerTest {
             "firstName" to "John",
             "lastName" to "Doe",
             "email" to "john.updated@example.com",
-            "phoneNumber" to "555-9999"
+            "phoneNumber" to "555-9999",
+            "leases" to emptyList<Map<String, Any>>()
         )
 
         mockMvc.perform(
@@ -131,6 +135,6 @@ class TenantControllerTest {
             .andExpect(status().isNoContent)
 
         mockMvc.perform(get("/api/tenants/$tenantId"))
-            .andExpect(status().is5xxServerError)
+            .andExpect(status().isNotFound)
     }
 }

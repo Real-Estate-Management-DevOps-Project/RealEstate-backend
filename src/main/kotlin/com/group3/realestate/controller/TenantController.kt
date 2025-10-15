@@ -25,8 +25,8 @@ class TenantController(
     @GetMapping("/{id}")
     @Operation(summary = "Get tenant by ID", description = "Retrieve a specific tenant by their ID")
     fun getTenantById(@PathVariable id: Long): ResponseEntity<Tenant> {
-        val tenant = tenantRepository.findById(id)
-            .orElseThrow { NoSuchElementException("Tenant not found with id: $id") }
+        val tenant = tenantRepository.findById(id).orElse(null)
+            ?: throw NoSuchElementException("Tenant not found with id: $id")
         return ResponseEntity.ok(tenant)
     }
 
@@ -43,9 +43,9 @@ class TenantController(
         @PathVariable id: Long,
         @RequestBody updatedTenant: Tenant
     ): ResponseEntity<Tenant> {
-        val tenant = tenantRepository.findById(id)
-            .orElseThrow { NoSuchElementException("Tenant not found with id: $id") }
-
+        if (!tenantRepository.existsById(id)) {
+            throw NoSuchElementException("Tenant not found with id: $id")
+        }
         updatedTenant.tenantId = id
         val saved = tenantRepository.save(updatedTenant)
         return ResponseEntity.ok(saved)
@@ -54,6 +54,9 @@ class TenantController(
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete tenant", description = "Delete a tenant by ID")
     fun deleteTenant(@PathVariable id: Long): ResponseEntity<Void> {
+        if (!tenantRepository.existsById(id)) {
+            throw NoSuchElementException("Tenant not found with id: $id")
+        }
         tenantRepository.deleteById(id)
         return ResponseEntity.noContent().build()
     }

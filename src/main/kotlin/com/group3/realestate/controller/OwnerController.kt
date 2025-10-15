@@ -25,8 +25,8 @@ class OwnerController(
     @GetMapping("/{id}")
     @Operation(summary = "Get owner by ID", description = "Retrieve a specific owner by their ID")
     fun getOwnerById(@PathVariable id: Long): ResponseEntity<Owner> {
-        val owner = ownerRepository.findById(id)
-            .orElseThrow { NoSuchElementException("Owner not found with id: $id") }
+        val owner = ownerRepository.findById(id).orElse(null)
+            ?: throw NoSuchElementException("Owner not found with id: $id")
         return ResponseEntity.ok(owner)
     }
 
@@ -43,9 +43,9 @@ class OwnerController(
         @PathVariable id: Long,
         @RequestBody updatedOwner: Owner
     ): ResponseEntity<Owner> {
-        val owner = ownerRepository.findById(id)
-            .orElseThrow { NoSuchElementException("Owner not found with id: $id") }
-
+        if (!ownerRepository.existsById(id)) {
+            throw NoSuchElementException("Owner not found with id: $id")
+        }
         updatedOwner.ownerId = id
         val saved = ownerRepository.save(updatedOwner)
         return ResponseEntity.ok(saved)
@@ -54,6 +54,9 @@ class OwnerController(
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete owner", description = "Delete an owner by ID")
     fun deleteOwner(@PathVariable id: Long): ResponseEntity<Void> {
+        if (!ownerRepository.existsById(id)) {
+            throw NoSuchElementException("Owner not found with id: $id")
+        }
         ownerRepository.deleteById(id)
         return ResponseEntity.noContent().build()
     }

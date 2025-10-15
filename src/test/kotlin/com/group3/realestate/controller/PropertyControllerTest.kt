@@ -107,9 +107,11 @@ class PropertyControllerTest {
 
     @Test
     @WithMockUser
-    fun `should return 500 when property not found`() {
+    fun `should return 404 when property not found`() {
         mockMvc.perform(get("/api/properties/99999"))
-            .andExpect(status().is5xxServerError)
+            .andExpect(status().isNotFound)
+            .andExpect(jsonPath("$.status").value(404))
+            .andExpect(jsonPath("$.error").value("Not Found"))
     }
 
     @Test
@@ -118,6 +120,7 @@ class PropertyControllerTest {
         val newProperty = mapOf(
             "owner" to mapOf("ownerId" to testOwner.ownerId),
             "addressLine1" to "200 New St",
+            "addressLine2" to null,
             "city" to "New City",
             "stateProvince" to "NC",
             "postalCode" to "54321",
@@ -128,7 +131,8 @@ class PropertyControllerTest {
             "numBedrooms" to 3,
             "numBathrooms" to 2,
             "yearBuilt" to 2021,
-            "description" to "New property"
+            "description" to "New property",
+            "managingAgents" to emptyList<Map<String, Any>>()
         )
 
         mockMvc.perform(
@@ -158,7 +162,8 @@ class PropertyControllerTest {
             "numBedrooms" to 2,
             "numBathrooms" to 1,
             "yearBuilt" to 2020,
-            "description" to "Updated property"
+            "description" to "Updated property",
+            "managingAgents" to emptyList<Map<String, Any>>()
         )
 
         mockMvc.perform(
@@ -180,6 +185,6 @@ class PropertyControllerTest {
             .andExpect(status().isNoContent)
 
         mockMvc.perform(get("/api/properties/$propertyId"))
-            .andExpect(status().is5xxServerError)
+            .andExpect(status().isNotFound)
     }
 }
