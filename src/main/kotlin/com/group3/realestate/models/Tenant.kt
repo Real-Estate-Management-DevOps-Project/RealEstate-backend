@@ -1,5 +1,6 @@
 package com.group3.realestate.models
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -32,7 +33,8 @@ data class Tenant(
     var phoneNumber: String,
 
     @OneToMany(mappedBy = "tenant", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
-    val leases: Set<Lease> = emptySet(),
+    @JsonIgnoreProperties("tenant")
+    val leases: List<Lease> = emptyList(),
 
     @CreatedDate
     @Column(nullable = false, updatable = false)

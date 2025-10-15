@@ -91,7 +91,7 @@ class DataSeeder(
                 numBathrooms = Random.nextInt(1, 4),
                 yearBuilt = Random.nextInt(1950, 2024),
                 description = faker.lorem().paragraph(),
-                managingAgents = setOf(agentsList.random()),
+                managingAgents = listOf(agentsList.random()),
                 createdAt = Instant.now(),
                 updatedAt = Instant.now()
             )

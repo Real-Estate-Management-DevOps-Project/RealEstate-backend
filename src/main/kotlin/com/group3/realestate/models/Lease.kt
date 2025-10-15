@@ -1,5 +1,6 @@
 package com.group3.realestate.models
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.group3.realestate.models.enums.LeaseStatus
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
@@ -32,6 +33,7 @@ data class Lease(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tenant_id", nullable = false)
+    @JsonIgnoreProperties("leases")
     var tenant: Tenant,
 
     @Column(nullable = false)
@@ -52,7 +54,8 @@ data class Lease(
     var leaseDocumentUrl: String?,
 
     @OneToMany(mappedBy = "lease", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
-    val payments: Set<Payment> = emptySet(),
+    @JsonIgnoreProperties("lease")
+    val payments: List<Payment> = emptyList(),
 
     @CreatedDate
     @Column(nullable = false, updatable = false)

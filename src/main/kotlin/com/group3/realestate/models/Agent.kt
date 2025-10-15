@@ -1,5 +1,6 @@
 package com.group3.realestate.models
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -35,7 +36,8 @@ data class Agent(
     var hireDate: LocalDate,
 
     @ManyToMany(mappedBy = "managingAgents", fetch = FetchType.LAZY)
-    val properties: Set<Property> = emptySet(),
+    @JsonIgnoreProperties("managingAgents")
+    val properties: List<Property> = emptyList(),
 
     @CreatedDate
     @Column(nullable = false, updatable = false)

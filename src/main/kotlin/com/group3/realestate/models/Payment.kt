@@ -1,5 +1,6 @@
 package com.group3.realestate.models
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -22,6 +23,7 @@ data class Payment(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lease_id", nullable = false)
+    @JsonIgnoreProperties("payments")
     var lease: Lease,
 
     @Column(nullable = false)
