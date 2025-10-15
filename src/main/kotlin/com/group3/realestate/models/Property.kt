@@ -1,5 +1,6 @@
 package com.group3.realestate.models
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.group3.realestate.models.enums.PropertyStatus
 import com.group3.realestate.models.enums.PropertyType
 import jakarta.persistence.CascadeType
@@ -29,6 +30,7 @@ data class Property(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
+    @JsonIgnoreProperties("properties")
     var owner: Owner?,
 
     @Column(nullable = false)
@@ -57,13 +59,14 @@ data class Property(
     var yearBuilt: Int?,
     var description: String?,
 
-    @ManyToMany(cascade = [CascadeType.PERSIST, CascadeType.MERGE])
+    @ManyToMany(cascade = [CascadeType.MERGE], fetch = FetchType.LAZY)
     @JoinTable(
         name = "property_agents",
         joinColumns = [JoinColumn(name = "property_id")],
         inverseJoinColumns = [JoinColumn(name = "agent_id")]
     )
-    val managingAgents: Set<Agent> = emptySet(),
+    @JsonIgnoreProperties("properties")
+    val managingAgents: List<Agent> = emptyList(),
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
