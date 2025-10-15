@@ -41,19 +41,9 @@ jobs:
 
     - name: Build with Gradle
       run: ./gradlew build --no-daemon
-      env:
-        SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/real_estate_db_test
-        SPRING_DATASOURCE_USERNAME: postgres
-        SPRING_DATASOURCE_PASSWORD: postgres
-        SPRING_PROFILES_ACTIVE: test
 
     - name: Run tests
       run: ./gradlew test --no-daemon
-      env:
-        SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/real_estate_db_test
-        SPRING_DATASOURCE_USERNAME: postgres
-        SPRING_DATASOURCE_PASSWORD: postgres
-        SPRING_PROFILES_ACTIVE: test
 
     - name: Upload test reports
       if: always()
